@@ -1,0 +1,22 @@
+<div ng-if="!selSala">
+	<h2>Salas <button ng-click="$parent.$parent.sala = {}" ng-if="!$parent.sala">Criar</button></h2>
+	<form ng-submit="criarSala(you, sala);" ng-if="$parent.sala">
+		<input type="text" name="nome" ng-model="$parent.$parent.sala.nome">
+		<button type="submit">Criar</button>
+	</form>
+	<div ng-repeat="s in salas" ng-click="selecionarSala(s, you);" style="border: 1px solid black; width: 23%; margin: 1%; float: left;">
+		<h3>{{s.nome}}</h3>
+		<p>{{i.player.length}}</p>
+	</div>
+</div>
+<div ng-if="selSala">
+	<h2>{{selSala.nome}} <button ng-click="sairSala(selSala, you);">Sair</button></h2>
+	<p ng-repeat="i in selSala.integrantes">{{i.player}}</p>
+	<div>
+		<h3>Bate Papo</h3>
+		<p ng-repeat="m in selSala.mensagens">{{m.player}}: {{m.mensagem}}</p>
+		<form>
+			<input type="text" ng-model="$parent.mensagem"><button ng-click="enviarMensagem(mensagem, you, selSala);">Enviar</button>
+		</form>
+	</div>
+</div>

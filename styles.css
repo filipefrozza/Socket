@@ -1,0 +1,22 @@
+body{
+	background-color: #f2f2f2 !important;
+}
+
+ng-view{
+	display: table;
+	align-content: center;
+	width: 100%;
+}
+
+ng-view form.login{
+	display: table-cell;
+	vertical-align: middle;
+}
+
+ng-view form.login .login-container{
+	width: 300px;
+	background-color: white;
+	margin: 0 auto;
+	padding: 15px;
+	border-radius: 5px;
+}

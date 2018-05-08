@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <canvas id="game" height="600" width="600" style="border: 1px solid black; float: right; width: 600px; height: 600px; cursor: none;"></canvas>
+    <p id="click">Click Inativo</p>
+    <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script type="text/javascript">
+      var socket = io();
+      USUARIO = null;
+      MOUSE = {
+        HOVER: {X:0,Y:0},
+        CLICK: {}
+      };
+      CONECTADO = false;
+      PLAYERS = [];
+      CLICK = false;
+      PATH = [];
+
+      $(document).ready(function(){
+        CANVAS = document.getElementById('game');
+        CTX = CANVAS.getContext('2d');
+        var r = ~~(Math.random()*10000);
+        CANVAS.addEventListener('mousedown',function(evt){
+          if(evt.button == 0){
+            CLICK = true;
+            $('#click').html('Click Ativo');
+          }
+        });
+        CANVAS.addEventListener('mouseup', function(evt){
+          CLICK = false;
+          PATH[USUARIO][PATH[USUARIO].length-1].SPLIT = true;
+          $('#click').html('Click Inativo');
+        });
+        CANVAS.addEventListener('mousemove',function(evt) {
+          var rect = CANVAS.getBoundingClientRect(), // abs. size of element
+              scaleX = CANVAS.width / rect.width,    // relationship bitmap vs. element for X
+              scaleY = CANVAS.height / rect.height;  // relationship bitmap vs. element for Y
+
+            MOUSE.HOVER.X = ~~((evt.clientX - rect.left) * scaleX);   // scale mouse coordinates after they have
+            MOUSE.HOVER.Y = ~~((evt.clientY - rect.top) * scaleY);    // been adjusted to be relative to element
+            if(CLICK){
+              PATH[USUARIO].push({X: MOUSE.HOVER.X, Y: MOUSE.HOVER.Y, SPLIT: false});
+              // socket.emit('path',JSON.stringify({PATH: JSON.stringify(PATH)}));
+            }
+            if(CONECTADO) {
+              // console.log("MOVER| X: "+MOUSE.HOVER.X+" Y: "+MOUSE.HOVER.Y);
+              socket.emit('mover',JSON.stringify({USER: USUARIO,HOVER: MOUSE.HOVER}));
+              socket.emit('path', JSON.stringify({USER: USUARIO, PATH: PATH[USUARIO]}));
+            }
+        });
+        socket.emit('conectar',JSON.stringify({USER: r, HOVER: MOUSE.HOVER}));
+        socket.on('conectado',function(m){
+          console.log(m+" se conectou");
+        });
+        socket.on('conectado_'+r,function(m){
+          console.log(m);
+          CONECTADO = true;
+          USUARIO = r;
+          PATH[USUARIO] = [];
+          var loadPlayers = JSON.parse(m);
+          for(P in loadPlayers){
+            PLAYERS[loadPlayers[P].USER] = loadPlayers[P].HOVER;
+          }
+          // console.log(PLAYERS);
+          socket.emit('mover',JSON.stringify({USER: USUARIO, HOVER: MOUSE.HOVER}));
+          socket.emit('path', JSON.stringify({USER: USUARIO, PATH: PATH[USUARIO]}));
+          DRAW();
+        });
+        socket.on('atualizar_hover',function(m){
+          m = JSON.parse(m);
+          // console.log(m);
+          PLAYERS[m.USER] = m.HOVER;
+          // console.log(PLAYERS);
+        });
+        socket.on('atualizar_path',function(m){
+          m = JSON.parse(m);
+          console.log(m);
+          PATH[m.USER] = m.PATH;
+        });
+        socket.on('disconnection',function(m){
+          console.log(m+" se desconectou");
+          delete PLAYERS[m];
+        });
+        DRAW = function(){
+          CTX.clearRect(0,0,CANVAS.width,CANVAS.height);
+          // console.log(PLAYERS);
+          for(P in PLAYERS){
+            CTX.fillRect(PLAYERS[P].X-2,PLAYERS[P].Y-2,4,4);
+          }
+          for(P in PATH){
+            for(J in PATH[P]){
+              if(J < PATH[P].length-1){
+                if(!PATH[P][~~J].SPLIT){
+                 CTX.beginPath();
+                 CTX.moveTo(PATH[P][J].X,PATH[P][J].Y);
+                 CTX.lineTo(PATH[P][~~J+1].X, PATH[P][~~J+1].Y);
+                 CTX.stroke(); 
+               }
+              }
+            }
+          }
+          requestAnimationFrame(DRAW);
+        }
+      });
+
+      window.onbeforeunload = confirmExit;
+      function confirmExit() {
+        console.log('saindo');
+        socket.emit('disconnected',USUARIO);
+      }
+    </script>
+  </body>
+</html>

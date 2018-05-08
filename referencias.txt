@@ -1,0 +1,1 @@
+http://nodebr.com/como-funciona-a-funcao-require-do-node-js/

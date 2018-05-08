@@ -2,7 +2,8 @@ exports.data = {
   'iniciantes': {
     nome: 'Iniciantes',
     integrantes: {},
-    index: 'iniciantes'
+    index: 'iniciantes',
+    quantidade: 0
   }
 };
 
@@ -23,6 +24,7 @@ exports.iniciar = function(socket, io){
 	    console.log(m.player, "tentando se conectar a sala "+m.sala);
 	    if(!salas.data[m.sala].integrantes[m.player]){
 	      	salas.data[m.sala].integrantes[m.player] = m;
+	      	salas.data[m.sala].quantidade++;
 	      	// salas['iniciantes'].mensagens.push();
 	      	socket.join(m.sala);
 	      	io.to(m.sala).emit('sala_conectou', JSON.stringify(salas.data[m.sala].integrantes));
@@ -56,6 +58,7 @@ exports.iniciar = function(socket, io){
 		}else{
 			socket.leave(m.sala);
 			delete salas.data[m.sala].integrantes[m.player];
+			salas.data[m.sala].quantidade--;
 			io.to(m.sala).emit('sala_conectou', JSON.stringify(salas.data[m.sala].integrantes));
 			socket.emit('sala_saiu', 'true');
 			io.emit('atualizar_salas', JSON.stringify(salas.data));

@@ -1,22 +1,32 @@
-<div ng-if="!selSala">
-	<h2>Salas <button ng-click="$parent.$parent.sala = {}" ng-if="!$parent.sala">Criar</button></h2>
-	<form ng-submit="criarSala(you, sala);" ng-if="$parent.sala">
-		<input type="text" name="nome" ng-model="$parent.$parent.sala.nome">
-		<button type="submit">Criar</button>
-	</form>
-	<div ng-repeat="s in salas" ng-click="selecionarSala(s, you);" style="border: 1px solid black; width: 23%; margin: 1%; float: left;">
-		<h3>{{s.nome}}</h3>
-		<p>{{i.player.length}}</p>
+<div class="container">
+	<div class="row" ng-if="!selSala">
+		<div class="col-md-12">
+			<h2>Salas <button ng-click="$parent.$parent.sala = {}" ng-if="!$parent.sala">Criar</button></h2>
+			<form ng-submit="criarSala(you, sala);" ng-if="$parent.sala">
+				<input type="text" name="nome" ng-model="$parent.$parent.sala.nome">
+				<button type="submit">Criar</button>
+			</form>
+		</div>
+		<div class="col-md-4 card" ng-repeat="s in salas">
+			<!-- <div class="col-md-6">
+				<img src="assets/image/chat.png">
+			</div> -->
+			<div class="col-md-6 p-3">
+				<h3>{{s.nome}}</h3>
+				<p>{{s.quantidade}}/4</p>
+				<button ng-click="selecionarSala(s, you);" class="btn btn-primary">Entrar</button>
+			</div>
+		</div>
 	</div>
-</div>
-<div ng-if="selSala">
-	<h2>{{selSala.nome}} <button ng-click="sairSala(selSala, you);">Sair</button></h2>
-	<p ng-repeat="i in selSala.integrantes">{{i.player}}</p>
-	<div>
-		<h3>Bate Papo</h3>
-		<p ng-repeat="m in selSala.mensagens">{{m.player}}: {{m.mensagem}}</p>
-		<form>
-			<input type="text" ng-model="$parent.mensagem"><button ng-click="enviarMensagem(mensagem, you, selSala);">Enviar</button>
-		</form>
+	<div class="row" ng-if="selSala">
+		<h2>{{selSala.nome}} <button ng-click="sairSala(selSala, you);">Sair</button></h2>
+		<p ng-repeat="i in selSala.integrantes">{{i.player}}</p>
+		<div>
+			<h3>Bate Papo</h3>
+			<p ng-repeat="m in selSala.mensagens">{{m.player}}: {{m.mensagem}}</p>
+			<form>
+				<input type="text" ng-model="$parent.mensagem"><button ng-click="enviarMensagem(mensagem, you, selSala);">Enviar</button>
+			</form>
+		</div>
 	</div>
 </div>

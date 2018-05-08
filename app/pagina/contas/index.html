@@ -1,10 +1,10 @@
 <form class="login" ng-submit="logar(usuario);" ng-if="!telaCadastrar">
 	<div class="login-container">
 		<div class="form-group">
-			<input class="form-control" type="text" ng-model="usuario.login" placeholder="Login">
+			<input class="form-control" type="text" ng-model="usuario.login" placeholder="Login" name="login">
 		</div>
 		<div class="form-group">
-			<input class="form-control" type="password" ng-model="usuario.senha" placeholder="Senha">
+			<input class="form-control" type="password" ng-model="usuario.senha" placeholder="Senha" name="senha">
 		</div>
 		<p>Não possui um usuário? <a href="" ng-click="toogle('telaCadastrar', 'on');">Cadastre-se</a></p>
 		<button class="btn btn-primary" type="submit">Logar</button>
@@ -13,13 +13,13 @@
 <form class="login" ng-submit="cadastrar(usuario);" ng-if="telaCadastrar">
 	<div class="login-container">
 		<div class="form-group">
-			<input class="form-control" type="text" ng-model="usuario.login" placeholder="Login">
+			<input class="form-control" type="text" ng-model="usuario.login" placeholder="Login" name="login">
 		</div>
 		<div class="form-group">
-			<input class="form-control" type="text" ng-model="usuario.nome" placeholder="Nome">
+			<input class="form-control" type="text" ng-model="usuario.nome" placeholder="Nome" name="nome">
 		</div>
 		<div class="form-group">
-			<input class="form-control" type="password" ng-model="usuario.senha" placeholder="Senha">
+			<input class="form-control" type="password" ng-model="usuario.senha" placeholder="Senha" name="senha">
 		</div>
 		<p>Já possui um usuário? <a href="" ng-click="toogle('telaCadastrar', 'off');">Logar</a></p>
 		<button class="btn btn-primary" type="submit">Cadastrar</button>		

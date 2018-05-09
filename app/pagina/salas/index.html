@@ -21,14 +21,25 @@
 		</div>
 	</div>
 	<div class="row" ng-if="selSala">
-		<h2>{{selSala.nome}} <button ng-click="sairSala(selSala, you);">Sair</button></h2>
-		<p ng-repeat="i in selSala.integrantes">{{i.player}}</p>
-		<div>
-			<h3>Bate Papo</h3>
-			<p ng-repeat="m in selSala.mensagens">{{m.player}}: {{m.mensagem}}</p>
-			<form>
-				<input type="text" ng-model="$parent.mensagem"><button ng-click="enviarMensagem(mensagem, you, selSala);">Enviar</button>
-			</form>
+		<div class="col-md-12">
+			<h2>{{selSala.nome}} <button class="btn btn-danger" ng-click="sairSala(selSala, you);">Sair</button></h2>
+			<p ng-repeat="i in selSala.integrantes">{{i.player}}</p>
+		</div>
+		<div class="col-md-4 p-1">
+			<div class="card">
+				<div class="col-md-12 p-2">
+					<h3>Bate Papo</h3>
+					<p ng-repeat="m in selSala.mensagens">{{m.player}}: {{m.mensagem}}</p>
+					<form class="form-inline">
+						<div class="form-group">
+							<input class="form-control" type="text" ng-model="$parent.mensagem">
+						</div>
+						<div class="form-group">
+							<button class="btn btn-primary" ng-click="enviarMensagem(mensagem, you, selSala);">Enviar</button>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

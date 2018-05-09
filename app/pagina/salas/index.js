@@ -3,7 +3,7 @@ exports.data = {
     nome: 'Iniciantes',
     integrantes: {},
     index: 'iniciantes',
-    quantidade: 3
+    quantidade: 0
   }
 };
 

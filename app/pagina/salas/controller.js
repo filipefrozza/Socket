@@ -25,15 +25,22 @@ angular.module('socket')
         socket.on('sala_conectou', function(m){
             if($scope.selSala){
                 $scope.selSala.integrantes = JSON.parse(m);
-            }else{
-                socket.emit('buscar_salas', '');
+                $scope.aplicar();
             }
-            $scope.aplicar();
+        });
+
+        socket.on('sala_alterada', function(m){
+            if(!$scope.selSala){
+                socket.emit('buscar_salas','');
+            }
         });
 
         socket.on('atualizar_salas', function(m){
-            $scope.salas = JSON.parse(m);
-            $scope.aplicar();
+            if(!$scope.selSala){
+                $scope.salas = JSON.parse(m);
+                console.log('atualizar_salas', m);
+                $scope.aplicar();
+            }
         });
 
         conectar();
@@ -50,11 +57,12 @@ angular.module('socket')
             console.log(s);
             socket.emit('sala_conectar', JSON.stringify({sala: s.index, player: you.login}));
             socket.on('sala_conectado', function(m){
+                m = JSON.parse(m);
                 console.log(m);
-                if(m == 'false'){
-                    alert('não foi possível conectar na sala');
+                if(m.erro){
+                    alert(m.erro);
                 }else{
-                    $scope.selSala = JSON.parse(m);
+                    $scope.selSala = m;
                     $scope.selSala.mensagens = [];
                     socket.on('sala_mensagem_atualizar', function(m){
                         console.log(m);

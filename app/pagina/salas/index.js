@@ -17,6 +17,7 @@ exports.criarSala = function(nome){
 		index: index,
 		quantidade: 0
 	};
+	return true;
 };
 
 exports.iniciar = function(socket, io){
@@ -81,7 +82,10 @@ exports.iniciar = function(socket, io){
 
 	socket.on('criar_sala', function(m){
 		m = JSON.parse(m);
-		salas.criarSala(m.sala);
-		io.emit('sala_criada', JSON.stringify(salas.data));
+		if(salas.criarSala(m.sala)){
+			io.emit('sala_criada', JSON.stringify(salas.data));
+		}else{
+			io.emit('sala_criada', JSON.stringify({erro: 'Já existe'}));
+		}
 	});
 };

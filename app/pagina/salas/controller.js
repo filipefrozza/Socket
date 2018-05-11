@@ -27,6 +27,16 @@ angular.module('socket')
             }
         });
 
+        socket.on('forcar_entrada', function(m){
+            m = JSON.parse(m);
+            if(m.erro){
+
+            }else{
+                $scope.selecionarSala(m,$scope.you);
+                $scope.aplicar();
+            }
+        });
+
         socket.on('sala_conectou', function(m){
             if($scope.selSala){
                 $scope.selSala.integrantes = JSON.parse(m);

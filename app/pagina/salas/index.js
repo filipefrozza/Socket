@@ -1,10 +1,10 @@
 exports.data = {
-  'iniciantes': {
-    nome: 'Iniciantes',
-    integrantes: {},
-    index: 'iniciantes',
-    quantidade: 0
-  }
+  // 'iniciantes': {
+  //   nome: 'Iniciantes',
+  //   integrantes: {},
+  //   index: 'iniciantes',
+  //   quantidade: 0
+  // }
 };
 
 exports.criarSala = function(nome){
@@ -67,6 +67,7 @@ exports.iniciar = function(socket, io){
 			delete salas.data[m.sala].integrantes[m.player];
 			salas.data[m.sala].quantidade--;
 			io.to(m.sala).emit('sala_conectou', JSON.stringify(salas.data[m.sala].integrantes));
+			if(salas.data[m.sala].quantidade==0) delete salas.data[m.sala];
 			socket.emit('sala_saiu', 'true');
 			io.emit('atualizar_salas', JSON.stringify(salas.data));
 			io.to(m.sala).emit('sala_mensagem_atualizar', JSON.stringify({player: 'Sistema', mensagem: m.player+" saiu da sala"}));
@@ -76,16 +77,20 @@ exports.iniciar = function(socket, io){
 	socket.on('disconnection', function(m){
 		if(m.sala){
 	    	delete salas.data[m.sala].integrantes[m.player];
+	    	salas.data[m.sala].quantidade--;
+	    	if(salas.data[m.sala].quantidade==0) delete salas.data[m.sala];
 	    	io.emit('atualizar_salas', JSON.stringify(salas.data));
 	    }
 	});
 
 	socket.on('criar_sala', function(m){
 		m = JSON.parse(m);
+		var index = m.sala.toLowerCase().replace(' ','-');
 		if(salas.criarSala(m.sala)){
 			io.emit('sala_criada', JSON.stringify(salas.data));
+			socket.emit('forcar_entrada', JSON.stringify(salas.data[index]));
 		}else{
-			io.emit('sala_criada', JSON.stringify({erro: 'Já existe'}));
+			socket.emit('sala_criada', JSON.stringify({erro: 'Já existe'}));
 		}
 	});
 };

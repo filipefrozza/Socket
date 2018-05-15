@@ -1,7 +1,7 @@
 angular.module('socket', ['ngCookies', 'ngRoute', 'oc.lazyLoad']);
 
-angular.module('socket').
-	config(function($routeProvider, $locationProvider){
+angular.module('socket')
+	.config(function($routeProvider, $locationProvider){
 		$locationProvider.hashPrefix('');
 		$routeProvider
 			.when('/', {
